@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    /* Custom styling for the form */
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: #6a11cb;
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .form-control {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #6a11cb;
+        box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        width: 100%;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05);
+    }
+
+    /* File upload styling */
+    .file-upload {
+        margin-top: 1rem;
+    }
+
+    .file-upload-label {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .file-upload-input {
+        display: none;
+    }
+
+    .file-upload-button {
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .file-upload-button:hover {
+        background: #e0e0e0;
+    }
+</style>
+
+<div class="form-container">
+    <h1 class="form-title">Update Issue</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_title" class="form-label">Issue Title</label>
+            {% render_field form.title class="form-control" placeholder="Enter the issue title" %}
+        </div>
+        <div class="mb-3">
+            <label for="id_description" class="form-label">Description</label>
+            {% render_field form.description class="form-control" placeholder="Describe the issue in detail" rows="5" %}
+        </div>
+        <div class="mb-3">
+            <label for="id_category" class="form-label">Category</label>
+            {% render_field form.category class="form-control" %}
+        </div>
+        <div class="mb-3">
+            <label for="id_priority" class="form-label">Priority</label>
+            {% render_field form.priority class="form-control" %}
+        </div>
+        <div class="mb-3">
+            <label for="id_attached_file" class="form-label">Attach Supporting Documents</label>
+            {% render_field form.attached_file class="form-control" %}
+        </div>
+        <button type="submit" class="btn btn-primary">Update Issue</button>
+    </form>
+</div>
+
+{% endblock content %}

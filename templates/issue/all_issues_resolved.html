@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    /* Custom styling for the card and table */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: #6a11cb;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    /* Custom table header styling */
+    .table thead th {
+        background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
+        color: white; /* White text */
+        font-weight: 600; /* Bold font */
+        padding: 1rem; /* Padding for better spacing */
+        text-align: left; /* Align text to the left */
+        border: none; /* Remove borders */
+        font-size: 1rem; /* Slightly larger font size */
+        letter-spacing: 0.5px; /* Add slight letter spacing */
+    }
+
+    .table tbody tr {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        transform: translateY(-3px);
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+
+    .table tbody td:first-child {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .table tbody td:last-child {
+        border-radius: 0 10px 10px 0;
+    }
+
+    .status-active {
+        color: #28a745; /* Green for Active */
+    }
+
+    .status-completed {
+        color: #dc3545; /* Red for Completed */
+    }
+
+    .status-pending {
+        color: #ffc107; /* Yellow for Pending */
+    }
+
+    .action-link {
+        color: #6a11cb;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .action-link:hover {
+        color: #2575fc;
+    }
+
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .page-item {
+        margin: 0 0.25rem;
+    }
+
+    .page-link {
+        color: #6a11cb;
+        border: 1px solid #6a11cb;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+        border-color: #6a11cb;
+    }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+        border-color: #6a11cb;
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+</style>
+
+<div class="card mx-auto" style="width: 90%;">
+    <div class="card-body">
+        <h5 class="card-title">Closed Issues</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Issue ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Assigned To</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issue %}
+                <tr>
+                    <td><small>{{ issue.issue_number }}</small></td>
+                    <td><small>{{ issue.title }}</small></td>
+                    <td><small>{{ issue.date_created }}</small></td>
+                    <td>
+                        <small>
+                            {% if issue.assigned_to %}
+                                {{ issue.assigned_to.username }}
+                            {% else %}
+                                <span class="text-muted">Not Assigned</span>
+                            {% endif %}
+                        </small>
+                    </td>
+                    <td>
+                        <small>
+                            {% if issue.issue_status == 'Active' %}
+                                <span class="status-active">Active</span>
+                            {% elif issue.issue_status == 'Completed' %}
+                                <span class="status-completed">Completed</span>
+                            {% elif issue.issue_status == 'Pending' %}
+                                <span class="status-pending">Pending</span>
+                            {% endif %}
+                        </small>
+                    </td>
+                    <td>
+                        <a href="{% url 'issue-details' issue.id %}" class="action-link">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if issue.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ issue.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ issue.number }} of {{ issue.paginator.num_pages }}</span>
+                    </li>
+                    {% if issue.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ issue.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ issue.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

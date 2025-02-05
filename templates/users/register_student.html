@@ -1,0 +1,112 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    /* Custom vibrant color scheme */
+    :root {
+        --primary-color: #6a11cb;
+        --secondary-color: #2575fc;
+        --accent-color: #ff6f61;
+        --background-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        --text-color: #ffffff;
+        --hover-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Card styling */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        background: var(--background-gradient);
+        color: var(--text-color);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    /* Form styling */
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        background-color: rgb(255, 255, 255);
+        border: none;
+        border-radius: 10px;
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        outline: none;
+    }
+
+    /* Button styling */
+    .btn-primary {
+        background: var(--accent-color);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        width: 100%;
+        transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--accent-color), #ff4d4d);
+        transform: scale(1.05);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .card {
+            width: 90% !important;
+            margin: 1rem auto;
+        }
+    }
+</style>
+
+<div class="card mx-auto" style="width: 40rem;">
+    <div class="card-body">
+        <h5 class="card-title">Register as Student</h5>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Username</label>
+                {% render_field form.username class="form-control" placeholder="Enter your username" %}
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email</label>
+                {% render_field form.email class="form-control" placeholder="Enter your email" %}
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                {% render_field form.password1 class="form-control" placeholder="Enter your password" %}
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
+                {% render_field form.password2 class="form-control" placeholder="Confirm your password" %}
+            </div>
+
+            <button class="btn btn-primary">Register</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

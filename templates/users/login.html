@@ -1,0 +1,138 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    /* Custom vibrant color scheme */
+    :root {
+        --primary-color: #6a11cb;
+        --secondary-color: #2575fc;
+        --accent-color: #ff6f61;
+        --background-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        --text-color: #ffffff;
+        --hover-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Card styling */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        background: var(--background-gradient);
+        color: var(--text-color);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    /* Form styling */
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        background-color: rgb(255, 255, 255);
+        border: none;
+        border-radius: 10px;
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        outline: none;
+    }
+
+    /* Button styling */
+    .btn-primary {
+        background: var(--accent-color);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        width: 100%;
+        transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--accent-color), #ff4d4d);
+        transform: scale(1.05);
+    }
+
+    /* Password toggle icon */
+    .password-toggle {
+        position: relative;
+    }
+
+    .password-toggle .toggle-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--text-color);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .card {
+            width: 90% !important;
+            margin: 1rem auto;
+        }
+    }
+</style>
+
+<div class="card mx-auto" style="width: 40rem;">
+    <div class="card-body">
+        <h5 class="card-title">Login to Continue!</h5>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Username</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="mb-3 password-toggle">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Enter your password" required>
+                <span class="toggle-icon" onclick="togglePasswordVisibility()">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            <button class="btn btn-primary">Login</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('exampleInputPassword1');
+        const toggleIcon = document.querySelector('.toggle-icon i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+
+{% endblock content %}

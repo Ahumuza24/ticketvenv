@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    /* Custom styling for the cards */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #6a11cb;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05);
+    }
+
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-title {
+        font-weight: bold;
+    }
+
+    .modal-footer .btn-secondary {
+        background: #6c757d;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .modal-footer .btn-primary {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        border: none;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="row">
+    <!-- Issue Details Card -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ issue.title }}</h5>
+                <p class="card-text"><b>Issue Number:</b> <small>{{ issue.issue_number }}</small></p>
+                <p class="card-text"><b>Description:</b> {{ issue.description }}</p>
+                <div class="row">
+                    <div class="col">
+                        <b>Date Created:</b> {{ issue.date_created }}
+                    </div>
+                    <div class="col">
+                        <b>Assigned To:</b> 
+                        {% if issue.assigned_to %}
+                            {{ issue.assigned_to.username }}
+                        {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <b>Resolved yet?</b> 
+                        {% if issue.is_resolved %}
+                            <span class="badge bg-success">Yes, Resolved</span>
+                        {% else %}
+                            <span class="badge bg-danger">Not Yet</span>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <b>Accepted Date:</b> 
+                        {% if issue.accepted_date %}
+                            {{ issue.accepted_date }}
+                        {% else %}
+                            <span class="text-muted">Not Accepted</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <b>Created By:</b> {{ issue.created_by.username }}
+                    </div>
+                    <div class="col">
+                        <b>Issue Status:</b> {{ issue.issue_status }}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <b>Category:</b> {{ issue.category }}
+                    </div>
+                    <div class="col">
+                        <b>Priority:</b> {{ issue.priority }}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <b>Attached File:</b> 
+                        {% if issue.attached_file %}
+                            <a href="{{ issue.attached_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View File</a>
+                        {% else %}
+                            <span class="text-muted">No File Attached</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Issues by User Card -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">All Issues by {{ issue.created_by.username }}</h5>
+                {% for issue in issues_per_user %}
+                    <p class="card-text">
+                        {{ issue.title }} 
+                        <a href="{% url 'issue-details' issue.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+    <div class="col">
+        {% if request.user.is_admin and not issue.is_resolved %}
+            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Confirm Resolution</a>
+        {% endif %}
+        {% if request.user.is_student and not issue.is_resolved %}
+            <a href="{% url 'update-issue' issue.id %}" class="btn btn-primary">Update Issue</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm Resolution</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to mark this issue as resolved?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'close-issue' issue.id %}" class="btn btn-primary">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    /* Custom styling for the card and table */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: #6a11cb;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+        font-weight: 500;
+        padding: 1rem;
+        border: none;
+    }
+
+    .table tbody tr {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        transform: translateY(-3px);
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+
+    .table tbody td:first-child {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .table tbody td:last-child {
+        border-radius: 0 10px 10px 0;
+    }
+
+    .status-active {
+        color: #28a745; /* Green for Active */
+    }
+
+    .status-completed {
+        color: #dc3545; /* Red for Completed */
+    }
+
+    .status-pending {
+        color: #ffc107; /* Yellow for Pending */
+    }
+
+    .action-link {
+        color: #6a11cb;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .action-link:hover {
+        color: #2575fc;
+    }
+</style>
+
+<div class="card mx-auto" style="width: 90%;">
+    <div class="card-body">
+        <h5 class="card-title">All Issues</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Issue ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Assigned To</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr>
+                    <td><small>{{ issue.issue_number }}</small></td>
+                    <td><small>{{ issue.title }}</small></td>
+                    <td><small>{{ issue.date_created }}</small></td>
+                    <td>
+                        <small>
+                            {% if issue.assigned_to %}
+                                {{ issue.assigned_to.username }}
+                            {% else %}
+                                <span class="text-muted">Not Assigned</span>
+                            {% endif %}
+                        </small>
+                    </td>
+                    <td>
+                        <small>
+                            {% if issue.issue_status == 'Active' %}
+                                <span class="status-active">{{ issue.issue_status }}</span>
+                            {% elif issue.issue_status == 'Completed' %}
+                                <span class="status-completed">{{ issue.issue_status }}</span>
+                            {% else %}
+                                <span class="status-pending">{{ issue.issue_status }}</span>
+                            {% endif %}
+                        </small>
+                    </td>
+                    <td>
+                        <a href="{% url 'issue-details' issue.id %}" class="action-link">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

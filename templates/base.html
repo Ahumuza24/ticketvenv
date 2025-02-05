@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom vibrant color scheme */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff6f61;
+            --background-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --text-color: #ffffff;
+            --hover-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background: var(--background-gradient);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: var(--hover-color);
+            border-radius: 5px;
+        }
+
+        .navbar-toggler {
+            border-color: var(--text-color);
+        }
+
+        .navbar-toggler-icon {
+            filter: invert(1);
+        }
+
+        /* Avatar dropdown styling */
+        .avatar-dropdown {
+            cursor: pointer;
+        }
+
+        .avatar-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .avatar-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .dropdown-menu {
+            background: var(--background-gradient);
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            color: var(--text-color) !important;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Button styling */
+        .btn-danger {
+            background-color: var(--accent-color);
+            border: none;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-danger:hover {
+            transform: scale(1.05);
+        }
+
+        /* Alert styling */
+        .alert {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container styling */
+        .container {
+            margin-top: 2rem;
+        }
+
+        /* Animation for navbar links */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .navbar-nav .nav-item {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .navbar-nav .nav-item:nth-child(1) { animation-delay: 0.1s; }
+        .navbar-nav .nav-item:nth-child(2) { animation-delay: 0.2s; }
+        .navbar-nav .nav-item:nth-child(3) { animation-delay: 0.3s; }
+        .navbar-nav .nav-item:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+    <title>Academic Issue Tracking System</title>
+</head>
+
+<body>
+    {% if request.user.is_student or request.user.is_admin %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand">Academic Issue Tracking System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               <!--  <li class="nav-item">
+                    <a href="" class="nav-link active">Home</a>
+                </li> -->
+
+                {% if request.user.is_student %}
+                <li class="nav-item">
+                    <a href="{% url 'create-issue' %}" class="nav-link">Log Issue</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'all-issues' %}" class="nav-link">View Issues</a>
+                </li>
+                {% elif request.user.is_admin %}
+                <li class="nav-item">
+                    <a href="{% url 'issue-queue' %}" class="nav-link">Issue Queue</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'workspace' %}" class="nav-link">Workspace</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Manage Issues
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'all-issues-resolved' %}">Closed Issues</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+
+            <!-- Avatar Dropdown -->
+            <div class="dropdown avatar-dropdown">
+                <div class="avatar-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user"></i>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+                </ul>
+            </div>
+
+        </div>
+        </div>
+
+    </nav>
+    {% else %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand">Academic Issue Tracking System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="" class="nav-link active">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'register-student' %}" class="nav-link">Register as Student</a>
+                </li>
+            </ul>
+        </div>
+        </div>
+
+    </nav>
+    {% endif %}
+
+    <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <b>{{ message }}</b>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+
+        {% endblock content %}
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>   
+    <script>
+               setTimeout(function() {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                let bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 2000);
+    </script> 
+</body>
+
+</html>
