@@ -28,17 +28,9 @@
     }
 
     /* Custom colors for cards */
-    .card-1 {
-        background: linear-gradient(135deg, #6a11cb, #2575fc); /* Purple to Blue */
-    }
-
-    .card-2 {
-        background: linear-gradient(135deg, #ff6f61, #ff4d4d); /* Coral to Red */
-    }
-
-    .card-3 {
-        background: linear-gradient(135deg, #2ecc71, #27ae60); /* Green to Dark Green */
-    }
+    .card-1 { background: linear-gradient(135deg, #6a11cb, #2575fc); } /* Purple to Blue */
+    .card-2 { background: linear-gradient(135deg, #ff6f61, #ff4d4d); } /* Coral to Red */
+    .card-3 { background: linear-gradient(135deg, #2ecc71, #27ae60); } /* Green to Dark Green */
 
     .btn-primary {
         background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -55,11 +47,10 @@
 </style>
 
 {% if request.user.is_student %}
-
+<!-- Student Dashboard -->
 <section class="container mt-5">
     <h1 class="display-5 fw-bold mb-4">Student Dashboard</h1>
     <div class="row">
-        <!-- Card for Issues in Progress -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center p-4 card-1">
                 <div class="card-body">
@@ -69,7 +60,6 @@
             </div>
         </div>
 
-        <!-- Card for Pending Issues -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center p-4 card-2">
                 <div class="card-body">
@@ -79,7 +69,6 @@
             </div>
         </div>
 
-        <!-- Card for Completed Issues -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center p-4 card-3">
                 <div class="card-body">
@@ -96,11 +85,10 @@
 </section>
 
 {% elif request.user.is_admin %}
-
+<!-- Admin Dashboard -->
 <section class="container mt-5">
     <h1 class="display-5 fw-bold mb-4">Admin Dashboard</h1>
     <div class="row">
-        <!-- Card for Open Issues -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center p-4 card-1">
                 <div class="card-body">
@@ -110,7 +98,6 @@
             </div>
         </div>
 
-        <!-- Card for Issues in Progress -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center p-4 card-2">
                 <div class="card-body">
@@ -120,7 +107,6 @@
             </div>
         </div>
 
-        <!-- Card for Resolved Issues -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center p-4 card-3">
                 <div class="card-body">
@@ -136,49 +122,74 @@
     </div>
 </section>
 
-{% else %}
-
+{% elif request.user.is_lecturer %}
+<!-- Lecturer Dashboard -->
 <section class="container mt-5">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">Welcome to Your Dashboard</h1>
-            <p class="col-md-8 fs-4">
-                Login or register to access your dashboard and manage your issues.
-            </p>
-            <a href="{% url 'login' %}" class="btn btn-primary btn-lg" type="button">Login</a>
+    <h1 class="display-5 fw-bold mb-4">Lecturer Dashboard</h1>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center p-4 card-1">
+                <div class="card-body">
+                    <h5 class="card-title">Issues Assigned</h5>
+                    <p class="card-text" id="assigned-issues">{{ assigned_issues_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center p-4 card-2">
+                <div class="card-body">
+                    <h5 class="card-title">Issues in Progress</h5>
+                    <p class="card-text" id="in-progress-lecturer">{{ in_progress_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center p-4 card-3">
+                <div class="card-body">
+                    <h5 class="card-title">Resolved Issues</h5>
+                    <p class="card-text" id="resolved-lecturer">{{ resolved_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% elif request.user.is_department_head %}
+<!-- Department Head Dashboard -->
+<section class="container mt-5">
+    <h1 class="display-5 fw-bold mb-4">Department Head Dashboard</h1>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center p-4 card-1">
+                <div class="card-body">
+                    <h5 class="card-title">Open Issues</h5>
+                    <p class="card-text" id="open-dept">{{ open_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center p-4 card-2">
+                <div class="card-body">
+                    <h5 class="card-title">Issues in Progress</h5>
+                    <p class="card-text" id="in-progress-dept">{{ in_progress_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center p-4 card-3">
+                <div class="card-body">
+                    <h5 class="card-title">Resolved Issues</h5>
+                    <p class="card-text" id="resolved-dept">{{ resolved_count }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
 {% endif %}
-
-<!-- Add JavaScript for real-time updates -->
-<script>
-    function updateDashboard() {
-        fetch('/real-time-issue-data/')  // Fetch data from the real-time endpoint
-            .then(response => response.json())
-            .then(data => {
-                // Update the card values
-                if (data.in_progress_count !== undefined) {
-                    document.getElementById('in-progress-count').textContent = data.in_progress_count;
-                }
-                if (data.pending_count !== undefined) {
-                    document.getElementById('pending-count').textContent = data.pending_count;
-                }
-                if (data.completed_count !== undefined) {
-                    document.getElementById('completed-count').textContent = data.completed_count;
-                }
-                if (data.open_count !== undefined) {
-                    document.getElementById('open-count').textContent = data.open_count;
-                }
-                if (data.resolved_count !== undefined) {
-                    document.getElementById('resolved-count').textContent = data.resolved_count;
-                }
-            });
-    }
-
-    // Update every 5 seconds
-    setInterval(updateDashboard, 5000);
-</script>
 
 {% endblock content %}

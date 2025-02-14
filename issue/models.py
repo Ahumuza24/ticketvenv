@@ -10,17 +10,12 @@ class Issue(models.Model):
     )
 
     category_choices = (
-        ('Academic', 'Academic'),
-        ('Administrative', 'Administrative'),
-        ('Technical', 'Technical'),
+        ('Missing Marks', 'Missing Marks'),
+        ('Appeals', 'Appeals'),
+        ('Corrections.', 'Corrections.'),
     )
 
-    priority_choices = (
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-    )
-
+    
     issue_number = models.UUIDField(default=uuid.uuid4)
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -32,7 +27,6 @@ class Issue(models.Model):
     closed_date = models.DateTimeField(null=True, blank=True)
     issue_status = models.CharField(max_length=100, choices=status_choices, default='Pending')
     category = models.CharField(max_length=100, choices=category_choices, default='Academic')
-    priority = models.CharField(max_length=100, choices=priority_choices, default='Low')
     attached_file = models.FileField(upload_to='issue_attachments/', null=True, blank=True)
 
     def __str__(self):
