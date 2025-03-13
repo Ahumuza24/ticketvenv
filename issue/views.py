@@ -185,4 +185,4 @@ def issue_queue(request):
     }
     return render(request, 'issue/issue_queue.html', context)
 
-#These are admin changes
+# new changes
