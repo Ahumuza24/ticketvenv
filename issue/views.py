@@ -184,3 +184,5 @@ def issue_queue(request):
         'issues': page_obj,
     }
     return render(request, 'issue/issue_queue.html', context)
+
+#These are admin changes
